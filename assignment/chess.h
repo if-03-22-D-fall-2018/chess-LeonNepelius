@@ -14,15 +14,17 @@
 enum Color {White,Black};
 enum PieceType
 {
-  Pawn,Knight,Rook,Bishop,Queen,King
+  Pawn,Knight,Rook,Bishop,Queen,King,NoPiece
 };
-
 struct ChessPiece
 {
   enum Color color;
   enum PieceType type;
 };
-
+enum PawnMove
+{
+	NormalMove,CaptureMove
+};
 struct ChessSquare
 {
   bool is_occupied;
@@ -35,8 +37,7 @@ typedef int Rank;
 typedef char File;
 typedef ChessSquare ChessBoard[8][8];
 typedef ChessSquare Chessboard[8][8];
-typedef ChessSquare NormalMove;
-typedef ChessSquare NoPiece;
+
 
 struct ChessPiece get_piece(ChessBoard chess_board, File file , int rank)
 {
@@ -44,12 +45,12 @@ struct ChessPiece get_piece(ChessBoard chess_board, File file , int rank)
 	return type.piece;
 }
 
-bool is_piece(struct ChessPiece board,enum Color color,enum PieceType piece)
+bool is_piece(struct ChessPiece piece,enum Color color,enum PieceType type)
 {
-	return board.type == piece && board.color == color;
+	return piece.type == type && piece.color == color;
 }
 
-void init_chess_board(ChessBoard chess_board)
+void init_chess_board(Chessboard chess_board)
 {
 	for(int i=0;i<8;i++)
 	{
@@ -61,16 +62,17 @@ void init_chess_board(ChessBoard chess_board)
 }
 void setup_chess_board(Chessboard chess_board);
 
-struct ChessSquare* get_square(ChessBoard chess_board,int file,int rank);
-bool is_square_occupied(ChessBoard chess_board,char file,int rank);
-bool add_piece(ChessBoard chess_board, char file ,int rank,struct ChessPiece piece);
-bool remove_piece(ChessBoard chess_board, char Xpos ,int Ypos);
-bool is_piece(struct ChessPiece piece, enum Color color ,enum PieceType type);
-bool squares_share_rank(char file1,  int rank1, int file2,  char rank2);
-bool squares_share_file(char file1,  int rank1, char file2,  int rank2);
-bool squares_share_diagonal(char file1,  int rank1, char file2,  int rank2);
+bool is_square_occupied(ChessBoard chess_board,File file,Rank rank);
+struct ChessSquare* get_square(ChessBoard chess_board,File file, Rank rank);
+bool add_piece(ChessBoard chess_board, File file ,Rank rank,struct ChessPiece piece);
+struct ChessPiece get_piece(ChessBoard chess_board, File file ,File rank);
+bool remove_piece(ChessBoard chess_board, File file ,Rank rank);
 
-bool squares_share_knights_move(char file1, int rank1, char file2,  int rank2);
-bool squares_share_kings_move(char file1,  int rank1, char file2,  int rank2);
-bool squares_share_pawns_move(enum Color color, NormalMove, char file1,  int rank1, char file2,  int rank2);
-bool squares_share_queens_move(char file1,  int rank1, char file2,  int rank2);
+bool squares_share_rank(File file1, Rank rank1, File file2, Rank rank2);
+bool squares_share_file(File file1, Rank rank1, File file2, Rank rank2);
+bool squares_share_diagonal(File file1, Rank rank1, File file2, Rank rank2);
+
+bool squares_share_knights_move(File file1, Rank rank1, File file2, Rank rank2);
+bool squares_share_kings_move(File file1, Rank rank1, File file2, Rank rank2);
+bool squares_share_pawns_move(enum Color color,enum PawnMove, File file1, Rank rank1, File file2, Rank rank2);
+bool squares_share_queens_move(File file1, Rank rank1, File file2, Rank rank2);
