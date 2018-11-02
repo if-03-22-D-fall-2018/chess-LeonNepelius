@@ -34,6 +34,7 @@
    for (int i = 0; i < 8; i++) {
      for (int j = 0; j < 8; j++) {
        chess_board[i][j].is_occupied = false;
+       chess_board[i][j].piece = {White,NoPiece};
      }
    }
  }
@@ -41,37 +42,37 @@
  {
    int int_file;
    int_file = convert_file_to_int(file);
-   if((file > 'h' || file < 'a') && (rank > 8 || rank < 1))
+   if((file > 'h' || file < 'a') || (rank > 8 || rank < 1))
    {
      return 0;
    }
-   return &chess_board[rank][int_file];
+   return &chess_board[int_file][rank];
  }
  bool is_square_occupied(ChessBoard chess_board, int file, Rank rank)
  {
-   return chess_board[rank][file].is_occupied == false;
+   return chess_board[file][rank].is_occupied == true;
  }
  bool add_piece(ChessBoard chess_board, File file, Rank rank, struct ChessPiece piece)
  {
    int int_file;
    int_file = convert_file_to_int(file);
-   if((file > 'h' || file < 'a') && (rank > 8 || rank < 1))
+   if((file > 'h' || file < 'a') || (rank > 8 || rank < 1))
    {
      return false;
    }
-   chess_board[rank][int_file].piece = piece;
+   chess_board[int_file][rank].piece = piece;
    return true;
  }
  struct ChessPiece get_piece(ChessBoard chess_board, File file, Rank rank)
  {
    int int_file;
    int_file = convert_file_to_int(file);
-   if(((file > 'h' || file < 'a') && (rank > 8 || rank < 1)) || chess_board[rank][int_file].is_occupied == true)
+   if(((file > 'h' || file < 'a') || (rank > 8 || rank < 1)) || chess_board[rank][int_file].is_occupied == true)
    {
-     chess_board[rank][int_file].piece.type = NoPiece;
-     return chess_board[rank][int_file].piece;
+     chess_board[int_file][rank].piece.type = NoPiece;
+     return chess_board[int_file][rank].piece;
    }
-   return chess_board[rank][int_file].piece;
+   return chess_board[int_file][rank].piece;
  }
  void setup_chess_board(ChessBoard chess_board)
  {
@@ -82,11 +83,11 @@
  {
    int int_file;
    int_file = convert_file_to_int(file);
-   if(((file > 'h' || file < 'a') && (rank > 8 || rank < 1)) || chess_board[rank][int_file].is_occupied == false)
+   if(((file > 'h' || file < 'a') || (rank > 8 || rank < 1)) || chess_board[rank][int_file].is_occupied == false)
    {
      return false;
    }
-   chess_board[rank][int_file].piece.type = NoPiece;
+   chess_board[int_file][rank].piece.type = NoPiece;
    return true;
  }
  bool squares_share_file(File s1_f, Rank s1_r, File s2_f, Rank s2_r)
