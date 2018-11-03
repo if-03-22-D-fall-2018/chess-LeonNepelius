@@ -34,7 +34,7 @@
    for (int i = 0; i < 8; i++) {
      for (int j = 0; j < 8; j++) {
        chess_board[i][j].is_occupied = false;
-       chess_board[i][j].piece = {White,NoPiece};
+       chess_board[i][j].piece.type = NoPiece;
      }
    }
  }
@@ -46,21 +46,24 @@
    {
      return 0;
    }
-   return &chess_board[int_file][rank];
+   return &chess_board[rank-1][int_file];
  }
- bool is_square_occupied(ChessBoard chess_board, int file, Rank rank)
+ bool is_square_occupied(ChessBoard chess_board, File file, Rank rank)
  {
-   return chess_board[file][rank].is_occupied == true;
+   int int_file;
+   int_file = convert_file_to_int(file);
+   return chess_board[rank-1][int_file].is_occupied;
  }
  bool add_piece(ChessBoard chess_board, File file, Rank rank, struct ChessPiece piece)
  {
    int int_file;
    int_file = convert_file_to_int(file);
-   if((file > 'h' || file < 'a') || (rank > 8 || rank < 1))
+   if((file > 'h' || file < 'a') || (rank > 8 || rank < 1) || chess_board[rank][int_file].is_occupied == true)
    {
      return false;
    }
-   chess_board[int_file][rank].piece = piece;
+   chess_board[rank-1][int_file].is_occupied = true;
+   chess_board[rank-1][int_file].piece = piece;
    return true;
  }
  struct ChessPiece get_piece(ChessBoard chess_board, File file, Rank rank)
@@ -69,25 +72,43 @@
    int_file = convert_file_to_int(file);
    if(((file > 'h' || file < 'a') || (rank > 8 || rank < 1)) || chess_board[rank][int_file].is_occupied == true)
    {
-     chess_board[int_file][rank].piece.type = NoPiece;
-     return chess_board[int_file][rank].piece;
+     chess_board[rank-1][int_file].piece.type = NoPiece;
+     return chess_board[rank-1][int_file].piece;
    }
-   return chess_board[int_file][rank].piece;
+   return chess_board[rank-1][int_file].piece;
  }
  void setup_chess_board(ChessBoard chess_board)
  {
+   File file;
    init_chess_board(chess_board);
+   add_piece(chess_board,'a',1,{White,Rook});
+   add_piece(chess_board,'h',1,{White,Rook});
+   add_piece(chess_board, 'b', 1, {White, Knight});
+   add_piece(chess_board, 'g', 1, {White, Knight});
+   add_piece(chess_board, 'c', 1, {White, Bishop});
+ 	 add_piece(chess_board, 'f', 1, {White, Bishop});
+ 	 add_piece(chess_board, 'd', 1, {White, Queen});
+ 	 add_piece(chess_board, 'e', 1, {White, King});
+ 	 add_piece(chess_board, 'a', 8, {Black, Rook});
+ 	 add_piece(chess_board, 'h', 8, {Black, Rook});
+ 	 add_piece(chess_board, 'b', 8, {Black, Knight});
+   add_piece(chess_board, 'g', 8, {Black, Knight});
+   add_piece(chess_board, 'c', 8, {Black, Bishop});
+ 	 add_piece(chess_board, 'f', 8, {Black, Bishop});
+ 	 add_piece(chess_board, 'd', 8, {Black, Queen});
+ 	 add_piece(chess_board, 'e', 8, {Black, King});
    //Continue with the beginning positions
  }
  bool remove_piece(ChessBoard chess_board, File file, Rank rank)
  {
    int int_file;
    int_file = convert_file_to_int(file);
-   if(((file > 'h' || file < 'a') || (rank > 8 || rank < 1)) || chess_board[rank][int_file].is_occupied == false)
+   if(((file > 'h' || file < 'a') || (rank > 8 || rank < 1)) || chess_board[rank-1][int_file].is_occupied == false)
    {
      return false;
    }
-   chess_board[int_file][rank].piece.type = NoPiece;
+   chess_board[rank-1][int_file].is_occupied = false;
+   chess_board[rank-1][int_file].piece.type = NoPiece;
    return true;
  }
  bool squares_share_file(File s1_f, Rank s1_r, File s2_f, Rank s2_r)

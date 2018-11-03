@@ -79,7 +79,6 @@ TEST(test_get_square)
 	int file;
 
 	init_chess_board(chess_board);
-
 	chess_board[4][2].is_occupied = true;
 	chess_board[4][2].piece = black_rook;
 
