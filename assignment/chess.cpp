@@ -14,17 +14,6 @@
 #include "general.h"
 #include "chess.h"
 
- int convert_file_to_int(File file)
- {
-   char alphabet[8] = {'a','b','c','d','e','f','g','h'};
-   for (int i = 0; i < 8; i++) {
-     if (file == alphabet[i])
-     {
-         return i;
-     }
-   }
-   return 0;
- }
  bool is_piece(struct ChessPiece pc, enum Color color, enum PieceType type)
  {
    return pc.color == color && pc.type == type;
@@ -40,25 +29,21 @@
  }
  struct ChessSquare* get_square (ChessBoard chess_board, File file, Rank rank)
  {
-   int int_file;
-   int_file = convert_file_to_int(file);
    if((file > 'h' || file < 'a') || (rank > 8 || rank < 1))
    {
      return 0;
    }
-   return &chess_board[rank-1][int_file];
+   return &chess_board[rank-1][file-97];
  }
  bool is_square_occupied(ChessBoard chess_board, File file, Rank rank)
  {
-   int int_file;
-   int_file = convert_file_to_int(file);
+   int int_file = file - 97;
    return chess_board[rank-1][int_file].is_occupied;
  }
  bool add_piece(ChessBoard chess_board, File file, Rank rank, struct ChessPiece piece)
  {
-   int int_file;
-   int_file = convert_file_to_int(file);
-   if((file > 'h' || file < 'a') || (rank > 8 || rank < 1) || chess_board[rank][int_file].is_occupied == true)
+   int int_file = file - 97;
+   if((file > 'h' || file < 'a') || (rank > 8 || rank < 1) || chess_board[rank-1][int_file].is_occupied)
    {
      return false;
    }
@@ -68,21 +53,24 @@
  }
  struct ChessPiece get_piece(ChessBoard chess_board, File file, Rank rank)
  {
-   int int_file;
-   int_file = convert_file_to_int(file);
-   if(((file > 'h' || file < 'a') || (rank > 8 || rank < 1)) || chess_board[rank][int_file].is_occupied == true)
+   int int_file = file - 97;
+   if(((file > 'h' || file < 'a') || (rank > 8 || rank < 1)) || chess_board[rank-1][int_file].is_occupied == false)
    {
      chess_board[rank-1][int_file].piece.type = NoPiece;
      return chess_board[rank-1][int_file].piece;
    }
-   return chess_board[rank-1][int_file].piece;
+   return chess_board[rank-1][file-97].piece;
  }
  void setup_chess_board(ChessBoard chess_board)
  {
    File file;
    init_chess_board(chess_board);
-   add_piece(chess_board,'a',1,{White,Rook});
-   add_piece(chess_board,'h',1,{White,Rook});
+   for (file = 'a'; file <= 'h'; file++) {
+ 		add_piece(chess_board, file, 2, {White,Pawn});
+ 		add_piece(chess_board, file, 7, {Black, Pawn});
+ 	}
+   add_piece(chess_board, 'a', 1, {White, Rook});
+   add_piece(chess_board, 'h', 1, {White, Rook});
    add_piece(chess_board, 'b', 1, {White, Knight});
    add_piece(chess_board, 'g', 1, {White, Knight});
    add_piece(chess_board, 'c', 1, {White, Bishop});
@@ -97,12 +85,10 @@
  	 add_piece(chess_board, 'f', 8, {Black, Bishop});
  	 add_piece(chess_board, 'd', 8, {Black, Queen});
  	 add_piece(chess_board, 'e', 8, {Black, King});
-   //Continue with the beginning positions
  }
  bool remove_piece(ChessBoard chess_board, File file, Rank rank)
  {
-   int int_file;
-   int_file = convert_file_to_int(file);
+   int int_file = file - 97;
    if(((file > 'h' || file < 'a') || (rank > 8 || rank < 1)) || chess_board[rank-1][int_file].is_occupied == false)
    {
      return false;
@@ -113,15 +99,27 @@
  }
  bool squares_share_file(File s1_f, Rank s1_r, File s2_f, Rank s2_r)
  {
-   return false;
+   if((s1_f > 'h' || s1_f < 'a') || (s2_f > 'h' || s2_f < 'a') || (s1_r > 8 || s1_r < 1) || (s2_r > 8 || s2_r < 1))
+   {
+     return false;
+   }
+   return (s1_f == s2_f);
  }
  bool squares_share_rank(File s1_f, Rank s1_r, File s2_f, Rank s2_r)
  {
-   return false;
+   if((s1_f > 'h' || s1_f < 'a') || (s2_f > 'h' || s2_f < 'a') || (s1_r > 8 || s1_r < 1) || (s2_r > 8 || s2_r < 1))
+   {
+     return false;
+   }
+   return (s1_r == s2_r);
  }
  bool squares_share_diagonal(File s1_f, Rank s1_r, File s2_f, Rank s2_r)
  {
-   return false;
+   if((s1_f > 'h' || s1_f < 'a') || (s2_f > 'h' || s2_f < 'a') || (s1_r > 8 || s1_r < 1) || (s2_r > 8 || s2_r < 1))
+   {
+     return false;
+   }
+   return (s1_f - s2_f == s1_r - s2_r || s2_f - s1_f == s2_r - s1_r || s2_f - s1_f == s1_r - s2_r);
  }
  bool squares_share_knights_move(File s1_f, Rank s1_r, File s2_f, Rank s2_r)
  {
