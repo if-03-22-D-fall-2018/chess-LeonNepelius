@@ -145,6 +145,18 @@
    }
    if (move == NormalMove)
    {
+     if (s1_r == 1 || s1_r == 8)
+     {
+       return false;
+     }
+     if (color == Black && s1_r == 7)
+     {
+       return ((s2_r == s1_r-2 && s2_f == s1_f) || (s2_r == s1_r-1 && s2_f == s1_f));
+     }
+     else if (color == White && s1_r == 2)
+     {
+       return ((s2_r == s1_r+2 && s2_f == s1_f) || (s2_r == s1_r+1 && s2_f == s1_f));
+     }
      if (color == Black && s1_r >= 4)
      {
        return (s2_r == s1_r-1 && s2_f == s1_f);
@@ -158,7 +170,11 @@
  }
  bool squares_share_queens_move(File s1_f, Rank s1_r, File s2_f, Rank s2_r)
  {
-   return false;
+   if((s1_f > 'h' || s1_f < 'a') || (s2_f > 'h' || s2_f < 'a') || (s1_r > 8 || s1_r < 1) || (s2_r > 8 || s2_r < 1))
+   {
+     return false;
+   }
+   return squares_share_rank(s1_f,s1_r,s2_f,s2_r) || squares_share_file(s1_f,s1_r,s2_f,s2_r) || squares_share_diagonal(s1_f,s1_r,s2_f,s2_r);
  }
  bool squares_share_kings_move(File s1_f, Rank s1_r, File s2_f, Rank s2_r)
  {
@@ -166,6 +182,5 @@
    {
      return false;
    }
-   return ((s2_r == s1_r+1 && s2_f == s1_f) || (s2_r == s1_r-1 && s2_f == s1_f) || (s2_f == s1_f+1 && s2_r == s1_r) || (s2_f == s1_f-1 && s2_r == s1_r)
-   || (s2_r == s1_r-1 && s2_f == s1_f-1)|| (s2_r == s1_r+1 && s2_f == s1_f+1) || (s2_r == s1_r-1 && s2_f == s1_f+1) || (s2_r == s1_r+1 && s2_f == s1_f-1));
+   return squares_share_rank(s1_f,s1_r,s2_f,s2_r) || squares_share_file(s1_f,s1_r,s2_f,s2_r) || squares_share_diagonal(s1_f,s1_r,s2_f,s2_r);
  }
