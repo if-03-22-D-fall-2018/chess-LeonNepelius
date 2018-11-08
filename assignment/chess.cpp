@@ -123,10 +123,37 @@
  }
  bool squares_share_knights_move(File s1_f, Rank s1_r, File s2_f, Rank s2_r)
  {
-   return false;
+   if((s1_f > 'h' || s1_f < 'a') || (s2_f > 'h' || s2_f < 'a') || (s1_r > 8 || s1_r < 1) || (s2_r > 8 || s2_r < 1))
+   {
+     return false;
+   }
+   return ((s2_f == s1_f+1 && s2_r == s1_r+2) || (s2_f == s1_f-1 && s2_r == s1_r-2) || (s2_f == s1_f-2 && s2_r == s1_r-1) || (s2_f == s1_f+2 && s2_r == s1_r+1)
+    || (s2_f == s1_f-1 && s2_r == s1_r+2) || (s2_f == s1_f+1 && s2_r == s1_r-2)|| (s2_f == s1_f+2 && s2_r == s1_r-1) || (s2_f == s1_f-2 && s2_r == s1_r+1));
  }
  bool squares_share_pawns_move(enum Color color, enum Move move, File s1_f, Rank s1_r, File s2_f, Rank s2_r)
  {
+   if (move == CaptureMove)
+   {
+     if (color == Black)
+     {
+       return (s2_f == s1_f+1 && s2_r == s1_r-1) || (s2_f == s1_f-1 && s2_r == s1_r-1);
+     }
+     else
+     {
+       return (s2_f == s1_f-1 && s2_r == s1_r+1) || (s2_f == s1_f+1 && s2_r == s1_r+1);
+     }
+   }
+   if (move == NormalMove)
+   {
+     if (color == Black && s1_r >= 4)
+     {
+       return (s2_r == s1_r-1 && s2_f == s1_f);
+     }
+     else if (color == White && s1_r <= 4)
+     {
+       return (s2_r == s1_r+1 && s2_f == s1_f);
+     }
+   }
    return false;
  }
  bool squares_share_queens_move(File s1_f, Rank s1_r, File s2_f, Rank s2_r)
@@ -135,5 +162,10 @@
  }
  bool squares_share_kings_move(File s1_f, Rank s1_r, File s2_f, Rank s2_r)
  {
-   return false;
+   if((s1_f > 'h' || s1_f < 'a') || (s2_f > 'h' || s2_f < 'a') || (s1_r > 8 || s1_r < 1) || (s2_r > 8 || s2_r < 1))
+   {
+     return false;
+   }
+   return ((s2_r == s1_r+1 && s2_f == s1_f) || (s2_r == s1_r-1 && s2_f == s1_f) || (s2_f == s1_f+1 && s2_r == s1_r) || (s2_f == s1_f-1 && s2_r == s1_r)
+   || (s2_r == s1_r-1 && s2_f == s1_f-1)|| (s2_r == s1_r+1 && s2_f == s1_f+1) || (s2_r == s1_r-1 && s2_f == s1_f+1) || (s2_r == s1_r+1 && s2_f == s1_f-1));
  }
